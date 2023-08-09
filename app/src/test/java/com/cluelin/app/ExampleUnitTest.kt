@@ -1,4 +1,4 @@
-package com.cluelin.questscheduler
+package com.cluelin.app
 
 import org.junit.Test
 
