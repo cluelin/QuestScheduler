@@ -6,8 +6,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -104,6 +102,20 @@ class DatabaseHelper(context: Context) :
         db.close()
     }
 
+    fun updateTerm(questTitle: String, delta: Int) {
+        val quest = getQuestByTitle(questTitle)
+
+        quest?.let {
+
+            val values = ContentValues().apply {
+                put(COLUMN_TERM, quest.term + delta)
+            }
+
+            val db = writableDatabase
+            db.update(TABLE_NAME_QUESTS, values, "$COLUMN_TITLE=?", arrayOf(questTitle))
+            db.close()
+        }
+    }
 
     // Retrieve a note by ID
     fun getQuestById(id: Int): Quest? {
@@ -192,7 +204,7 @@ class DatabaseHelper(context: Context) :
     fun getQuestLogListByTitle(questTitle: String): List<QuestLog> {
         val questLogs = mutableListOf<QuestLog>()
         val quest = this.getQuestByTitle(questTitle)
-        quest?.let{
+        quest?.let {
             val selection = "$COLUMN_QUEST_ID = ${it.id}"
 
             questLogs.addAll(this.getQuestLogsList(selection))
