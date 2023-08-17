@@ -49,8 +49,6 @@ class QuestList : Fragment(), OnItemClickListener, OnItemLongClickListener {
         dataManager = DataManager(requireContext())
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
 
-        this.insertTestItems()
-
         val questList = dataManager.getAllUnDoneQuests()
 
         val layoutManager = LinearLayoutManager(requireContext())
@@ -86,14 +84,6 @@ class QuestList : Fragment(), OnItemClickListener, OnItemLongClickListener {
         dataManager.updateCompletedTime(quest.title, formattedDateTime)
     }
 
-
-    fun insertTestItems() {
-        dataManager.removeAllRows()
-        dataManager.insertQuest(Quest("Doing Something Great", 1))
-        dataManager.insertQuest(Quest("약 먹기", 1))
-        dataManager.insertQuest(Quest("청소기,건조기 먼지 정리", 14))
-        dataManager.insertQuest(Quest("식기세척기 쓰레기 버리기", 30))
-    }
 
 
     companion object {

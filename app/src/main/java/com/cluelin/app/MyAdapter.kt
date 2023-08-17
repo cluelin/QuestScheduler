@@ -1,6 +1,5 @@
 package com.cluelin.app
 
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,7 @@ class MyAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.quest_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_quest, parent, false)
         return ViewHolder(view)
     }
 
