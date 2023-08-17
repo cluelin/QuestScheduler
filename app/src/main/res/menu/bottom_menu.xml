@@ -5,15 +5,18 @@
         android:id="@+id/home"
         android:enabled="true"
         android:title="홈"
+        android:icon="@drawable/list_icon"
         app:showAsAction="always" />
     <item
         android:id="@+id/log"
         android:enabled="true"
         android:title="로그"
+        android:icon="@drawable/chart_icon"
         app:showAsAction="always" />
     <item
         android:id="@+id/add"
         android:enabled="true"
         android:title="추가"
+        android:icon="@drawable/add_icon"
         app:showAsAction="always" />
 </menu>
