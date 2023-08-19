@@ -36,6 +36,10 @@ class QuestLog : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_quest_log, container, false)
+
+//        TODO
+//        quest 활동기록을 이용해서 chart 그리기.
+//        stopwatch까지 구현하면 그래프 업데이트
     }
 
     companion object {

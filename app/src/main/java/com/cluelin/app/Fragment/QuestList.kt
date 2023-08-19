@@ -54,6 +54,9 @@ class QuestList : Fragment(), OnItemClickListener, OnItemLongClickListener {
         val layoutManager = LinearLayoutManager(requireContext())
         recyclerView.layoutManager = layoutManager
 
+//        TODO
+//        adpter 생성 위치를 activity 로 옮겨서 모든 프래그 먼트에서 사용할수잇게 만들고싶음.
+//        아니면 하다못해 Add 프래그먼트에서 item추가 할수잇게끔 변경.
         val adapter = MyAdapter(questList as MutableList<Quest>, this)
         recyclerView.adapter = adapter
 

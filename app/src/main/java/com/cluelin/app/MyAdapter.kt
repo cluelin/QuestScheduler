@@ -27,7 +27,10 @@ class MyAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val quest = questList[position]
         holder.textView.text = quest.title
+        //TODO
+        // remain days에 이미지나 색상강조 표시, 파이어!! 같은 느낌으로다가.
         holder.remainDays.text = quest.term.toString()
+
 
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(quest)

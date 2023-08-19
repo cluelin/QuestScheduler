@@ -12,12 +12,14 @@
 
         <EditText
             android:id="@+id/quest_name"
+            android:hint="title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
 
         <EditText
             android:id="@+id/quest_term"
+            android:hint="term"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>

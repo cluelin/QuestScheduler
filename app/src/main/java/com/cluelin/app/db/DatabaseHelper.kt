@@ -168,7 +168,7 @@ class DatabaseHelper(context: Context) :
     fun getAllUnDoneQuests(): List<Quest> {
         val selection =
             "$COLUMN_LAST_COMPLETED_TIME IS null OR " +
-                    "strftime('%s', 'now') - strftime('%s', $COLUMN_LAST_COMPLETED_TIME) >= $COLUMN_TERM * 24 * 60 * 60"
+                    "strftime('%d', 'now') - strftime('%d', $COLUMN_LAST_COMPLETED_TIME) >= $COLUMN_TERM"
 
         return this.getQuestList(selection)
     }
@@ -178,6 +178,9 @@ class DatabaseHelper(context: Context) :
         val quests = mutableListOf<Quest>()
         val db = readableDatabase
 
+        //TODO
+//        quest 리스트로 가져올때 term 을 기준으로 정렬해서 반환하기.
+//        last completed time이랑 term이랑 비교해서 시간이 줄어들건데, 그럼 우선순위를 위로해주자.
         val cursor: Cursor = db.query(
             TABLE_NAME_QUESTS,
             arrayOf(COLUMN_ID, COLUMN_TITLE, COLUMN_TERM, COLUMN_LAST_COMPLETED_TIME),
