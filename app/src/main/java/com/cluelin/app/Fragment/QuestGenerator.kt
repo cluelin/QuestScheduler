@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.cluelin.app.R
+import com.cluelin.app.SharedViewModel
 import com.cluelin.app.db.DataManager
 import com.cluelin.app.db.Quest
 
@@ -17,9 +19,19 @@ import com.cluelin.app.db.Quest
 class QuestGenerator : Fragment() {
     val TAG = "injae.jang"
 
-    lateinit var dataManager: DataManager
-    lateinit var etQuestTitle: EditText
-    lateinit var etQuestTerm: EditText
+    private lateinit var btnAdd : Button
+    private lateinit var etQuestTitle: EditText
+    private lateinit var etQuestTerm: EditText
+
+    private lateinit var dataManager: DataManager
+    private lateinit var sharedViewModel: SharedViewModel
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        dataManager = sharedViewModel.dataManager
+    }
 
 
     override fun onCreateView(
@@ -28,11 +40,8 @@ class QuestGenerator : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         var addFragment = inflater.inflate(R.layout.fragment_quest_add, container, false)
-        dataManager = DataManager(requireContext())
 
-        val btnAdd : Button = addFragment.findViewById(R.id.btn_add_quest)
-        etQuestTitle = addFragment.findViewById(R.id.quest_name)
-        etQuestTerm = addFragment.findViewById(R.id.quest_term)
+        mappingUI(addFragment)
 
         btnAdd.setOnClickListener {
             this.insertQuest()
@@ -42,8 +51,14 @@ class QuestGenerator : Fragment() {
         return addFragment
     }
 
+    private fun mappingUI(view: View){
+        btnAdd = view.findViewById(R.id.btn_add_quest)
+        etQuestTitle = view.findViewById(R.id.quest_name)
+        etQuestTerm = view.findViewById(R.id.quest_term)
+    }
 
-    fun insertQuest(){
+
+    private fun insertQuest(){
         val questTitle = etQuestTitle.text.toString()
         val questTerm = Integer.parseInt(etQuestTerm.text.toString())
 

@@ -168,7 +168,7 @@ class DatabaseHelper(context: Context) :
     fun getAllUnDoneQuests(): List<Quest> {
         val selection =
             "$COLUMN_LAST_COMPLETED_TIME IS null OR " +
-                    "strftime('%d', 'now') - strftime('%d', $COLUMN_LAST_COMPLETED_TIME) >= $COLUMN_TERM"
+                    "CAST(julianday('now') - julianday($COLUMN_LAST_COMPLETED_TIME) AS INTEGER) >= $COLUMN_TERM"
 
         return this.getQuestList(selection)
     }
@@ -209,6 +209,19 @@ class DatabaseHelper(context: Context) :
         val quest = this.getQuestByTitle(questTitle)
         quest?.let {
             val selection = "$COLUMN_QUEST_ID = ${it.id}"
+
+            questLogs.addAll(this.getQuestLogsList(selection))
+        }
+
+        return questLogs
+    }
+
+    fun getQuestLogListByTitleAndDays(questTitle: String, days: Int): List<QuestLog> {
+        val questLogs = mutableListOf<QuestLog>()
+        val quest = this.getQuestByTitle(questTitle)
+        quest?.let {
+            val selection = "$COLUMN_QUEST_ID = ${it.id} AND " +
+                    "CAST(julianday('now') - julianday($COLUMN_COMPLETED_TIME) AS INTEGER) <= $days"
 
             questLogs.addAll(this.getQuestLogsList(selection))
         }

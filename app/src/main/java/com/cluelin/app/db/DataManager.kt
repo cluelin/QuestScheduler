@@ -17,6 +17,10 @@ class DataManager(private val context: Context) {
         return databaseHelper.getQuestLogListByTitle(questTitle)
     }
 
+    fun getQuestLogListByTitleAndDays(questTitle: String, days : Int): List<QuestLog> {
+        return databaseHelper.getQuestLogListByTitleAndDays(questTitle, days)
+    }
+
     fun getNoteById(id: Int): Quest? {
         return databaseHelper.getQuestById(id)
     }
