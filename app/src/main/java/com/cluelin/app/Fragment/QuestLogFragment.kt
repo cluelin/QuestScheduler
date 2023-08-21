@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.cluelin.app.R
 import com.cluelin.app.SharedViewModel
 import com.cluelin.app.db.DataManager
+import com.cluelin.app.db.QuestLog
 import com.cluelin.app.utils.Common
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis.XAxisPosition
@@ -21,7 +22,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 
-class QuestLog : Fragment() {
+class QuestLogFragment : Fragment() {
     private lateinit var chart: LineChart
     private lateinit var dataManager: DataManager
     private lateinit var sharedViewModel: SharedViewModel
@@ -58,11 +59,8 @@ class QuestLog : Fragment() {
         chart.setDrawGridBackground(false)
 
 
-
-
         this.setYAxis()
         this.setXAxis()
-
 
         // Refresh the chart to display changes
         chart.invalidate()
@@ -78,19 +76,21 @@ class QuestLog : Fragment() {
     }
 
     private fun initEntry() : List<Entry>{
-//        val logs: List<QuestLog> = dataManager.getQuestLogListByTitleAndDays("PCSE", 7)
-//        val entries : MutableList<Entry> = mutableListOf()
-//        for (log in logs){
-//            entries.add(Entry(log.completedTime, 1f))
-//        }
+        val logs: List<QuestLog> = dataManager.getQuestLogListByTitleAndDays("PCSE", 7)
+        val entries : MutableList<Entry> = mutableListOf()
+        for (log in logs){
+
+
+            entries.add(Entry(getDays(log.completedTime), timeToFloat(log.completedTime)))
+        }
 
         // Create sample data entries
-        val entries = listOf(
-            Entry(-7f, timeToFloat("23:30:00")),
-            Entry(-5f, timeToFloat("10:19:00")),
-            Entry(-3f, timeToFloat("10:19:00")),
-            Entry(0f, timeToFloat("08:19:00")),
-        )
+//        val entries = listOf(
+//            Entry(-7f, timeToFloat("23:30:00")),
+//            Entry(-5f, timeToFloat("10:19:00")),
+//            Entry(-3f, timeToFloat("10:19:00")),
+//            Entry(0f, timeToFloat("08:19:00")),
+//        )
 
         return entries
     }
@@ -125,8 +125,20 @@ class QuestLog : Fragment() {
         xAxis.valueFormatter = DateAXisFormatter()
     }
 
+    private fun getDays(dateStr: String):Float {
+        val inputFormat = SimpleDateFormat("YYYY-MM-DD HH:mm:ss", Locale.getDefault())
+//        val outputFormat = SimpleDateFormat("YYYY-MM-DD", Locale.getDefault())
+
+        val date = inputFormat.parse(dateStr)
+        val today = Calendar.getInstance()
+        val diffDays = (date.time - today.time.time) / (60 * 60 * 24 * 1000)
+        Log.i(Common().TAG, "diffDays = ${diffDays}")
+
+        return diffDays.toFloat()
+    }
+
     private fun timeToFloat(dateStr: String): Float {
-        val inputFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+        val inputFormat = SimpleDateFormat("YYYY-MM-DD HH:mm:ss", Locale.getDefault())
         val outputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
         val date = inputFormat.parse(dateStr)

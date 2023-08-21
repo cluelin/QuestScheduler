@@ -6,14 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.cluelin.app.Fragment.QuestGenerator
 import com.cluelin.app.Fragment.QuestList
-import com.cluelin.app.Fragment.QuestLog
+import com.cluelin.app.Fragment.QuestLogFragment
 import com.google.android.material.navigation.NavigationBarView
 import com.cluelin.app.db.DataManager
 
 class MainActivity3 : AppCompatActivity() {
 
     var questList = QuestList()
-    var questLog = QuestLog()
+    var questLog = QuestLogFragment()
     var questGenerator = QuestGenerator()
     private lateinit var sharedViewModel: SharedViewModel
 
