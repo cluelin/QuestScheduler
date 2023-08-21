@@ -9,11 +9,12 @@ import com.cluelin.app.Fragment.QuestList
 import com.cluelin.app.Fragment.QuestLogFragment
 import com.google.android.material.navigation.NavigationBarView
 import com.cluelin.app.db.DataManager
+import com.cluelin.app.db.Quest
 
 class MainActivity3 : AppCompatActivity() {
 
-    var questList = QuestList()
-    var questLog = QuestLogFragment()
+    var questListFragment = QuestList()
+    var questLogFragment = QuestLogFragment()
     var questGenerator = QuestGenerator()
     private lateinit var sharedViewModel: SharedViewModel
 
@@ -28,10 +29,13 @@ class MainActivity3 : AppCompatActivity() {
     private fun setViewModel(){
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         sharedViewModel.dataManager = DataManager(this)
+
+        val questList = sharedViewModel.dataManager.getAllUnDoneQuests()
+        sharedViewModel.questAdapter = QuestAdapter(questList, questListFragment)
     }
 
     private fun setFragment(){
-        supportFragmentManager.beginTransaction().replace(R.id.containers, questList).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.containers, questListFragment).commit()
 
         var navigation: NavigationBarView = findViewById(R.id.bottom_navigation_view)
         navigation.setOnItemSelectedListener { item ->
@@ -42,11 +46,11 @@ class MainActivity3 : AppCompatActivity() {
     private fun rotateFragments(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.home -> {
-                supportFragmentManager.beginTransaction().replace(R.id.containers, questList).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.containers, questListFragment).commit()
                 return true
             }
             R.id.log -> {
-                supportFragmentManager.beginTransaction().replace(R.id.containers, questLog).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.containers, questLogFragment).commit()
                 return true
             }
             R.id.add -> {

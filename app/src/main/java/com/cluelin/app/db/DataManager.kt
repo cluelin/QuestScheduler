@@ -1,6 +1,5 @@
 package com.cluelin.app.db
 
-import android.content.ContentValues
 import android.content.Context
 import android.util.Log
 
@@ -12,12 +11,21 @@ class DataManager(private val context: Context) {
         databaseHelper.insertQuest(quest)
     }
 
+    fun insertQuestLog(questId :Int, completedTime: String){
+        databaseHelper.insertQuestLog(questId, completedTime)
+    }
+
+    fun getQuestByTitle(title: String) : Quest?{
+        return databaseHelper.getQuestByTitle(title)
+    }
+
 
     fun getQuestLogListByTitle(questTitle: String): List<QuestLog> {
         return databaseHelper.getQuestLogListByTitle(questTitle)
     }
 
     fun getQuestLogListByTitleAndDays(questTitle: String, days : Int): List<QuestLog> {
+        Log.d("", "invoked getQuestLogListByTitleAndDays()")
         return databaseHelper.getQuestLogListByTitleAndDays(questTitle, days)
     }
 

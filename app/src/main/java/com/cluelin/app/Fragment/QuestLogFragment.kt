@@ -13,6 +13,7 @@ import com.cluelin.app.SharedViewModel
 import com.cluelin.app.db.DataManager
 import com.cluelin.app.db.QuestLog
 import com.cluelin.app.utils.Common
+import com.cluelin.app.utils.Common.getDaysFromToday
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis.XAxisPosition
 import com.github.mikephil.charting.data.Entry
@@ -31,7 +32,6 @@ class QuestLogFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 //        TODO
-//        quest 활동기록을 이용해서 chart 그리기.
 //        stopwatch 구현 후 그래프 업데이트
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
@@ -75,27 +75,19 @@ class QuestLogFragment : Fragment() {
         return view
     }
 
-    private fun initEntry() : List<Entry>{
+    private fun initEntry(): List<Entry> {
         val logs: List<QuestLog> = dataManager.getQuestLogListByTitleAndDays("PCSE", 7)
-        val entries : MutableList<Entry> = mutableListOf()
-        for (log in logs){
-
-
-            entries.add(Entry(getDays(log.completedTime), timeToFloat(log.completedTime)))
+        val entries: MutableList<Entry> = mutableListOf()
+        for (log in logs) {
+            Log.i(Common.TAG, "log.completedTime : ${log.completedTime}")
+            entries.add(
+                Entry(getDaysFromToday(log.completedTime).toFloat(), timeToFloat(log.completedTime)))
         }
-
-        // Create sample data entries
-//        val entries = listOf(
-//            Entry(-7f, timeToFloat("23:30:00")),
-//            Entry(-5f, timeToFloat("10:19:00")),
-//            Entry(-3f, timeToFloat("10:19:00")),
-//            Entry(0f, timeToFloat("08:19:00")),
-//        )
 
         return entries
     }
 
-    private fun setYAxis(){
+    private fun setYAxis() {
 
         // disable dual axis (only use LEFT axis)
         chart.axisRight.isEnabled = false
@@ -108,7 +100,7 @@ class QuestLogFragment : Fragment() {
         }
     }
 
-    private fun setXAxis(){
+    private fun setXAxis() {
 
         val xAxis = chart.xAxis
 
@@ -125,27 +117,16 @@ class QuestLogFragment : Fragment() {
         xAxis.valueFormatter = DateAXisFormatter()
     }
 
-    private fun getDays(dateStr: String):Float {
-        val inputFormat = SimpleDateFormat("YYYY-MM-DD HH:mm:ss", Locale.getDefault())
-//        val outputFormat = SimpleDateFormat("YYYY-MM-DD", Locale.getDefault())
-
-        val date = inputFormat.parse(dateStr)
-        val today = Calendar.getInstance()
-        val diffDays = (date.time - today.time.time) / (60 * 60 * 24 * 1000)
-        Log.i(Common().TAG, "diffDays = ${diffDays}")
-
-        return diffDays.toFloat()
-    }
-
     private fun timeToFloat(dateStr: String): Float {
-        val inputFormat = SimpleDateFormat("YYYY-MM-DD HH:mm:ss", Locale.getDefault())
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val outputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
         val date = inputFormat.parse(dateStr)
         val formattedDate = outputFormat.format(date)
+        val time = outputFormat.parse(formattedDate)
 
-        Log.i(Common().TAG, "time : $formattedDate")
-        return date.time.toFloat()
+        Log.i(Common.TAG, "time : $formattedDate")
+        return time.time.toFloat()
     }
 
     private class TimeValueFormatter(private val timeFormat: SimpleDateFormat) :
@@ -155,7 +136,7 @@ class QuestLogFragment : Fragment() {
         }
     }
 
-    private class DateAXisFormatter() : ValueFormatter(){
+    private class DateAXisFormatter() : ValueFormatter() {
         override fun getFormattedValue(value: Float): String {
             val dateFormat = SimpleDateFormat("MM-dd", Locale.getDefault())
             val calendar = Calendar.getInstance()

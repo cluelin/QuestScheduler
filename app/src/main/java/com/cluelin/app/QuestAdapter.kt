@@ -8,11 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cluelin.app.Fragment.OnItemClickListener
 import com.cluelin.app.db.Quest
+import com.cluelin.app.utils.Common.getDaysFromToday
 
-class MyAdapter(
-    private val questList: MutableList<Quest>,
+class QuestAdapter(
+    var questList: List<Quest>,
     private val itemClickListener: OnItemClickListener
-) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<QuestAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.textView)
@@ -29,12 +30,12 @@ class MyAdapter(
         holder.textView.text = quest.title
         //TODO
         // remain days에 이미지나 색상강조 표시, 파이어!! 같은 느낌으로다가.
-        holder.remainDays.text = quest.term.toString()
+        holder.remainDays.text = (quest.term - getDaysFromToday(quest.lastCompletedTime)).toString()
 
 
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(quest)
-            questList.removeAt(position)
+//            questList.removeAt(position)
             this.notifyDataSetChanged()
         }
 
@@ -47,6 +48,7 @@ class MyAdapter(
     override fun getItemCount(): Int {
         return questList.size
     }
+
 
     private fun showPopupWindow(anchorView: View, quest: Quest) {
         val popupView = LayoutInflater.from(anchorView.context).inflate(R.layout.item_popup, null)

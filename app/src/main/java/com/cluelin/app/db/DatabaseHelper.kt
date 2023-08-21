@@ -6,6 +6,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+import com.cluelin.app.utils.Common
 import java.util.*
 
 
@@ -69,7 +71,7 @@ class DatabaseHelper(context: Context) :
         db.close()
     }
 
-    private fun insertQuestLog(questID: Int, completedTime: String) {
+    fun insertQuestLog(questID: Int, completedTime: String) {
         val values = this.configureLOGValue(questID, completedTime)
         val db = writableDatabase
         db.insert(TABLE_NAME_QUESTS_LOGS, null, values)
@@ -89,17 +91,16 @@ class DatabaseHelper(context: Context) :
 
         val quest = getQuestByTitle(questTitle)
         quest?.let {
-            quest.lastCompletedTime?.let {
-                this.insertQuestLog(quest.id, it)
+            val contentValues = ContentValues().apply {
+                put(COLUMN_LAST_COMPLETED_TIME, completedTime)
             }
-        }
+            val db = writableDatabase
+            db.update(TABLE_NAME_QUESTS, contentValues, "$COLUMN_TITLE=?", arrayOf(questTitle))
 
-        val values = ContentValues().apply {
-            put(COLUMN_LAST_COMPLETED_TIME, completedTime)
+            this.insertQuestLog(it.id, completedTime)
+
+            db.close()
         }
-        val db = writableDatabase
-        db.update(TABLE_NAME_QUESTS, values, "$COLUMN_TITLE=?", arrayOf(questTitle))
-        db.close()
     }
 
     fun updateTerm(questTitle: String, delta: Int) {
@@ -179,7 +180,6 @@ class DatabaseHelper(context: Context) :
         val db = readableDatabase
 
         //TODO
-//        quest 리스트로 가져올때 term 을 기준으로 정렬해서 반환하기.
 //        last completed time이랑 term이랑 비교해서 시간이 줄어들건데, 그럼 우선순위를 위로해주자.
         val cursor: Cursor = db.query(
             TABLE_NAME_QUESTS,
@@ -188,7 +188,13 @@ class DatabaseHelper(context: Context) :
             null,
             null,
             null,
-            null
+            "$COLUMN_LAST_COMPLETED_TIME ," +
+                    "$COLUMN_TERM - " +
+                    "CASE " +
+                    "    WHEN $COLUMN_LAST_COMPLETED_TIME IS NULL THEN 0 " +
+                    "    ELSE CAST(julianday('now') - julianday($COLUMN_LAST_COMPLETED_TIME) AS INTEGER)" +
+                    "END"
+
         )
         while (cursor.moveToNext()) {
             val quest = Quest(
@@ -223,6 +229,10 @@ class DatabaseHelper(context: Context) :
             val selection = "$COLUMN_QUEST_ID = ${it.id} AND " +
                     "CAST(julianday('now') - julianday($COLUMN_COMPLETED_TIME) AS INTEGER) <= $days"
 
+            Log.i(
+                Common.TAG,
+                "this.getQuestLogsList(selection) : ${this.getQuestLogsList(selection)}"
+            )
             questLogs.addAll(this.getQuestLogsList(selection))
         }
 

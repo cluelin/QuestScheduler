@@ -5,4 +5,5 @@ import com.cluelin.app.db.DataManager
 
 class SharedViewModel : ViewModel() {
     lateinit var dataManager: DataManager
+    lateinit var questAdapter: QuestAdapter
 }
